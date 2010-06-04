@@ -5,7 +5,8 @@ from sms_message import IncomingSMSMessage
 from google.appengine.ext.webapp import template
 from models import db
 
-
+'api key to get legitimate content. dummy for now'
+API_KEY = 'XYZ'
 class MainPage(webapp.RequestHandler):
     """
     This is a debugging page that allows me to test how the code handles messages.
@@ -15,32 +16,38 @@ class MainPage(webapp.RequestHandler):
         path = os.path.join(os.path.dirname(__file__), 'templates/registration.html')
         self.response.out.write(template.render(path, template_values))
 
-class Register(webapp.RequestHandler):
+"""class Register(webapp.RequestHandler):
     def post(self):
         self.response.out.write('<html><body>You wrote:<pre>')
         self.response.out.write(cgi.escape(self.request.get('content')))
         self.response.out.write(cgi.escape(self.request.get('phone_no')))
-        self.response.out.write('</pre></body></html>')
+        self.response.out.write('</pre></body></html>')"""
 
 
-"""class Register(webapp.RequestHandler):
-#        Handles the form submission
-	debug = False
-	def get(self):
-		'Pass on get requests to the post handler.'
-		self.post()
+class Register(webapp.RequestHandler):
+    'Handles the form submission'
+    debug = False
+    
+    """def get(self):
+        'Pass on get requests to the post handler.'
+        self.post()"""
 
-	def post(self):
-		'Handle the post request.'
-		msg = IncomingSMSMessage(self.request.get('phone'), 
-							self.request.get('body'))
-		msg.confirm()
-		event = msg.save()
-		if msg:
-			template_values = {'event': event}
-			path = os.path.join(os.path.dirname(__file__), 'templates/notification.html')
-			self.response.out.write(template.render(path, template_values))
-"""
+    def post(self):
+	'Handle the post request.'
+        api_key = self.request.get('api_key')
+
+        'hope its not a spammer'
+        if len(api_key) > 0 and api_key == API_KEY:
+	    msg = IncomingSMSMessage(self.request.get('phone'), 
+	    self.request.get('body'))
+	    msg.confirm()
+	    event = msg.save()
+	    
+        if msg:
+            template_values = {'event': event}
+	    path = os.path.join(os.path.dirname(__file__), 'templates/notification.html')
+	    self.response.out.write(template.render(path, template_values))
+
 class Event(webapp.RequestHandler):
 	"""
 	This is a debugging page that allows me to test how the code creates events.

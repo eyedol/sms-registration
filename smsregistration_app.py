@@ -9,8 +9,7 @@ from handlers import MainPage, Register, ListVisitors, Event
 application = webapp.WSGIApplication(
   [('/', ListVisitors), 
    ('/register', Register),
-   ('/event/create', Event),
-   ('/event/list', ListVisitors)],
+   ('/event/create', Event)],
   debug=True)
 
 def main():

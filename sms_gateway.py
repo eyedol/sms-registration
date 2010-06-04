@@ -40,3 +40,6 @@ class ClickatellGateway(SMSGateway):
                                 headers={'Content-Type': 'application/x-www-form-urlencoded'})
         if self.DEBUG and result.status_code == 200:
             self.response.out.write(result.content)
+
+            
+        
