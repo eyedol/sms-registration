@@ -4,14 +4,15 @@ from sms_message import IncomingSMSMessage
 from google.appengine.ext.webapp import template
 from models import *
 
+
 class MainPage(webapp.RequestHandler):
-	"""
-	This is a debugging page that allows me to test how the code handles messages.
-	"""
-	def get(self):
-		template_values = {}
-		path = os.path.join(os.path.dirname(__file__), 'templates/registration.html')
-		self.response.out.write(template.render(path, template_values))
+    """
+    This is a debugging page that allows me to test how the code handles messages.
+    """
+    def get(self):
+        template_values = {}
+        path = os.path.join(os.path.dirname(__file__), 'templates/registration.html')
+        self.response.out.write(template.render(path, template_values))
 
 class Register(webapp.RequestHandler):
     def post(self):
@@ -20,10 +21,6 @@ class Register(webapp.RequestHandler):
         self.response.out.write(cgi.escape(self.request.get('phone_no')))
         self.response.out.write('</pre></body></html>')
 
-application = webapp.WSGIApplication(
-                                     [('/', MainPage),
-                                      ('/register', Register)],
-                                     debug=True)
 
 """class Register(webapp.RequestHandler):
 #        Handles the form submission
@@ -53,12 +50,43 @@ class Event(webapp.RequestHandler):
 		self.response.out.write(template.render(path, template_values))
 
 class ListVisitors(webapp.RequestHandler):
-	"""
-	This is a debugging page that allows me to test how the code creates events.
-	"""
-	def get(self):
-		visitors = db.GqlQuery("SELECT * FROM RegisteredVisitor ORDER BY phone DESC LIMIT 10")
-		template_values = {'visitors': visitors}
+    """
+        This is a debugging page that allows me to test how the code creates events."""
 
-		path = os.path.join(os.path.dirname(__file__), 'templates/visitor_list.html')
-		self.response.out.write(template.render(path, template_values))
+    def get(self):
+        
+        """ This page only shows if a user is an admin """
+        
+        if users.is_current_user_admin():
+            url = users.create_logou_url(self.request.uri)
+            url_linktext = 'Logout'
+
+            """ Lets fetch everything for now and figure out 
+            pagination later. """
+
+            visitors = db.GqlQuery("SELECT * FROM RegisteredVisitor ORDER BY phone DESC ")
+        
+            template_values = {
+                    'visitors': visitors,
+                    'url':url,
+                    'url_linktext':url_linktext,
+                    }
+
+            path = os.path.join(os.path.dirname(__file__), 
+                    'templates/visitor_list.html')
+	    self.response.out.write(template.render(path, template_values))
+
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
+
+application = webapp.WSGIApplication(
+        [('/', ListVisitors),
+        ('/register', Register)],
+        debug=True)
+
+pplication = webapp.WSGIApplication(
+                                     [('/', ListVisitors),
+                                      ('/register', Register)],
+                                     debug=True)
+
+

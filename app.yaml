@@ -11,4 +11,5 @@ handlers:
   upload: static/images/favicon.ico
 - url: /.*
   script: smsregistration_app.py
+  login : admin
 

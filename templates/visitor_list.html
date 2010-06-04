@@ -1,22 +1,30 @@
 <html>
-<head>
-<link type="text/css" rel="stylesheet" href="stylesheets/style.css" />
-</head>
-<body>
-<h1>All visitors</h1>
-	<table>
-	<thead>
-		<td> Phone </td>
-		<td> Body </td>
-		<td> Date registered </td>
-	</thead>
-	{% for i in visitors %}
-		<tr>
+    <head>
+        <link type="text/css" rel="stylesheet" href="stylesheets/style.css" />
+    </head>
+    <body>
+        {% if len(visitors) == 0 %}
+            <!-- make this page fancy I beg -->
+            <div>No registered users yet</div>
+        {% else %}
+            <h1>All visitors</h1>
+            <table>
+                <thead>
+	            <td> Phone </td>
+	            <td> Body </td>
+	            <td> Date registered </td>
+                </thead>
+        
+	    {% for i in visitors %}
+		    <tr>
 			<td> {{ i.phone }} </td>
 			<td> {{ i.body }} </td>
 			<td> {{ i.date|date:"l, M d Y" }} </td>
-		</tr>
-	{% endfor %}
-	</table>
-</body>
+		    </tr>
+            {% endfor %}
+        
+            </table>
+        {% endif %}
+        <a href="{{url}}">{{ url_linktext}}</a>
+    </body>
 </html>
