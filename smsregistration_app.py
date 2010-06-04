@@ -7,7 +7,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from handlers import MainPage, Register, ListVisitors, Event
 
 application = webapp.WSGIApplication(
-  [('/', MainPage), 
+  [('/', ListVisitors), 
    ('/register', Register),
    ('/event/create', Event),
    ('/event/list', ListVisitors)],

@@ -1,8 +1,9 @@
 import os
+from google.appengine.api import users
 from google.appengine.ext import webapp
 from sms_message import IncomingSMSMessage
 from google.appengine.ext.webapp import template
-from models import *
+from models import db
 
 
 class MainPage(webapp.RequestHandler):
@@ -58,7 +59,7 @@ class ListVisitors(webapp.RequestHandler):
         """ This page only shows if a user is an admin """
         
         if users.is_current_user_admin():
-            url = users.create_logou_url(self.request.uri)
+            url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
 
             """ Lets fetch everything for now and figure out 
@@ -79,14 +80,5 @@ class ListVisitors(webapp.RequestHandler):
         else:
             self.redirect(users.create_login_url(self.request.uri))
 
-application = webapp.WSGIApplication(
-        [('/', ListVisitors),
-        ('/register', Register)],
-        debug=True)
-
-pplication = webapp.WSGIApplication(
-                                     [('/', ListVisitors),
-                                      ('/register', Register)],
-                                     debug=True)
 
 
