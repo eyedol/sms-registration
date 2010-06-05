@@ -112,7 +112,7 @@ class WebVisitors(webapp.RequestHandler):
             """ Lets fetch everything for now and figure out 
             pagination later. """
 
-            visitors = db.GqlQuery("SELECT * FROM WebRegistered ORDER BY phone DESC ")
+            visitors = db.GqlQuery("SELECT * FROM WebRegistered ORDER BY date DESC ")
         
             template_values = {
                     'visitors': visitors,

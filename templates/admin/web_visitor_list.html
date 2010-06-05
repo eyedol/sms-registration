@@ -3,20 +3,22 @@
         <link type="text/css" rel="stylesheet" href="stylesheets/style.css" />
     </head>
     <body>
-            <h1>All visitors</h1>
+            <h1>All Users who registered via the web</h1>
             <a href="{{smsurl}}">{{smsurl_linktext}}</a>    
             <table>
                 <thead>
-	            <td> Phone </td>
-	            <td> Body </td>
+	            <td> Full Name </td>
+                    <td> Email </td>
+                    <td> Expectation </td>
                     <td> Date registered </td>
                     <td>Confirmation No.</td>
                 </thead>
         
 	    {% for i in visitors %}
 		    <tr>
-			<td> {{ i.phone }} </td>
-			<td> {{ i.body }} </td>
+			<td> {{ i.fname }} </td>
+                        <td> {{ i.email }} </td>
+                        <td> {{ e.expectation }}</td>
                         <td> {{ i.date|date:"l, M d Y" }} </td>
                         <td> {{ i.hash }} </td>
 		    </tr>
