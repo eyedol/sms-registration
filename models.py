@@ -9,6 +9,16 @@ class RegisteredVisitor(db.Model):
     date = db.DateTimeProperty(auto_now_add=True)
     hash = db.StringProperty()
 
+class WebRegistered(db.Model):
+    """
+    Data about users who registered form the web
+    """
+    fname = db.StringProperty()
+    email = db.StringProperty()
+    expectation = db.StringProperty(multiline=True)
+    date = db.DateTimeProperty(auto_now_add=True)
+    hash = db.StringProperty()
+
 class Event(db.Model):
     """
     Create an event for users to register

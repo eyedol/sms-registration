@@ -68,7 +68,7 @@ class IncomingSMSMessage(SMSMessage):
 	def save(self):
 		'Override so that we can also write to google docs'
 		SMSMessage.save(self)
-		self.googleDocIt()        
+                self.googleDocIt()        
 
 	def get_confirmation_number(self):
 		'Return a digit number taken from the hash'

@@ -2,6 +2,7 @@ import os
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from sms_message import IncomingSMSMessage
+from web_registeration import Registration
 from google.appengine.ext.webapp import template
 from models import db
 
@@ -13,15 +14,26 @@ class MainPage(webapp.RequestHandler):
     """
     def get(self):
         template_values = {}
-        path = os.path.join(os.path.dirname(__file__), 'templates/registration.html')
+        path = os.path.join(os.path.dirname(__file__), 'templates/web_registration.html')
         self.response.out.write(template.render(path, template_values))
 
-"""class Register(webapp.RequestHandler):
+class WebRegister(webapp.RequestHandler):
+    
+    debug = False
+    
+    #def get(self):
+     #   self.post()
+
     def post(self):
-        self.response.out.write('<html><body>You wrote:<pre>')
-        self.response.out.write(cgi.escape(self.request.get('content')))
-        self.response.out.write(cgi.escape(self.request.get('phone_no')))
-        self.response.out.write('</pre></body></html>')"""
+        reg = Registration( self.request.get('fname'),self.request.get('email'),
+        self.request.get('expectation'))
+        confirmation = reg.confirm()
+        event = reg.save()
+
+        if reg:
+            template_values = {'event': event,'confirmation':confirmation}
+            path = os.path.join(os.path.dirname(__file__),'templates/notification.html')
+            self.response.out.write(template.render(path, template_values))
 
 
 class Register(webapp.RequestHandler):
@@ -42,20 +54,11 @@ class Register(webapp.RequestHandler):
 	    self.request.get('body'))
 	    msg.confirm()
 	    event = msg.save()
-	    
+
         if msg:
             template_values = {'event': event}
 	    path = os.path.join(os.path.dirname(__file__), 'templates/notification.html')
 	    self.response.out.write(template.render(path, template_values))
-
-class Event(webapp.RequestHandler):
-	"""
-	This is a debugging page that allows me to test how the code creates events.
-	"""
-	def get(self):
-		template_values = {}
-		path = os.path.join(os.path.dirname(__file__), 'templates/event.html')
-		self.response.out.write(template.render(path, template_values))
 
 class ListVisitors(webapp.RequestHandler):
     """
@@ -68,6 +71,8 @@ class ListVisitors(webapp.RequestHandler):
         if users.is_current_user_admin():
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
+            weburl = 'admin/web'
+            weburl_linktext = 'Web List'
 
             """ Lets fetch everything for now and figure out 
             pagination later. """
@@ -78,14 +83,60 @@ class ListVisitors(webapp.RequestHandler):
                     'visitors': visitors,
                     'url':url,
                     'url_linktext':url_linktext,
+                    'weburl':weburl,
+                    'weburl_linktext':weburl_linktext
                     }
 
             path = os.path.join(os.path.dirname(__file__), 
-                    'templates/visitor_list.html')
+                    'templates/admin/visitor_list.html')
+	    self.response.out.write(template.render(path, template_values))
+
+        else:
+            self.redirect(users.create_login_url(self.request.uri))
+
+class WebVisitors(webapp.RequestHandler):
+    """
+        This is a debugging page that allows me to test how the code creates events."""
+
+    def get(self):
+        
+        """ This page only shows if a user is an admin """
+        
+        if users.is_current_user_admin():
+            url = users.create_logout_url(self.request.uri)
+            url_linktext = 'Logout'
+            
+            smsurl = '/admin'
+            smsurl_linktext = 'SMS List'
+
+            """ Lets fetch everything for now and figure out 
+            pagination later. """
+
+            visitors = db.GqlQuery("SELECT * FROM WebRegistered ORDER BY phone DESC ")
+        
+            template_values = {
+                    'visitors': visitors,
+                    'url':url,
+                    'url_linktext':url_linktext,
+                    'smsurl':smsurl,
+                    'smsurl_linktext':smsurl_linktext
+                    }
+
+            path = os.path.join(os.path.dirname(__file__), 
+                    'templates/admin/web_visitor_list.html')
 	    self.response.out.write(template.render(path, template_values))
 
         else:
             self.redirect(users.create_login_url(self.request.uri))
 
 
+
+class Event(webapp.RequestHandler):
+    """
+    This is a debugging page that allows me to test how the code creates events.
+    """
+    def get(self):
+        template_values = {}
+        path = os.path.join(os.path.dirname(__file__), 'templates/event.html')
+        self.response.out.write(template.render(path, template_values))
 
