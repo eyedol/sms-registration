@@ -49,9 +49,9 @@ class WebRegistration(object):
 	def save(self):
 	    'Save to the datastore'
 	    user = WebRegistered()
-	    user.fname = self.m_fname()
-	    user.email = self.m_email()
-            user.expectation = self.m_expectation()
+	    user.fname = self.m_fname
+	    user.email = self.m_email
+            user.expectation = self.m_expectation
 	    user.hash = self.get_hash()
 	    return user.put()
 
